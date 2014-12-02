@@ -1,31 +1,43 @@
-<html>
+<html style="background-color:#563d7c">
 	<head>
 		<title>My App</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+		<link rel="stylesheet" type="text/css" href="/stylesheets/style.css">
 		<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.19/angular.min.js"></script>
 		<script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.10/angular-ui-router.js"></script>
+		<script src="https://code.jquery.com/jquery.js"></script>
 		<script src="/javascripts/angularApp.js"></script>
 		<style> .glyphicon-thumbs-up{cursor:pointer}</style>
 		<style> .glyphicon-thumbs-down{cursor:pointer}</style>
 	</head>
-	<body ng-app="myApp" >
+	<body ng-app="myApp" class="container" style="background-color:339966">
 		<div class="row">
 			<div class="col-md-6 col-md-offset-3">
 			<ui-view></ui-view>
 			</div>
-		</div>	
+		</div>
+		<div class="row">
+			<address class='col-md-6 col-md-offset-3'>
+  				<strong>Some Company, Inc.</strong><br>
+  					001 street<br>
+  					Some City, State XXXXX<br>
+  					<abbr title="Phone">P:</abbr> (123) 456-7890
+			</address>
+		</div>
 	<script type="text/ng-template" id="/home.html">
 		<div class="page-header">
 			<h1>Mini Post</h1>
 		</div>
 		<div ng-repeat="post in posts | orderBy:'-upvotes'">
-			<span class="glyphicon glyphicon-thumbs-up"
-			ng-click="voteUp(post)"></span>
+			<span class="glyphicon glyphicon-thumbs-up" 
+				ng-click="voteUp(post)">
+			</span>
 			OR
 			<span class="glyphicon glyphicon-thumbs-down"
 			ng-click="voteDown(post)"></span>
 			"{{post.title}}" Started by {{post.author}} - upvotes:{{post.upvotes}}
-			<span><a href="#/posts/{{$index}}">Comments</a></span>
+			<span><a href="#/posts/{{post._id}}">Comments</a></span>
 		</div>
 		<form ng-submit="addPost()">
 		<table>
@@ -41,8 +53,9 @@
 			<span>
 				"{{post.title}}" Started by {{post.author}}
 			</span>
-			</h3>
+			</h3>		
 		</div>
+
 		<div ng-repeat="comment in post.comments | orderBy:'-upvotes'">
 			<span class="glyphicon glyphicon-thumbs-up"
 			ng-click="upVoteComment(comment)"></span>

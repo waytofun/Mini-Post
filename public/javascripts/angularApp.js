@@ -1,5 +1,4 @@
 'use strict';
-
 // Declare app level module which depends on views, and components
 angular.module('myApp', ['ui.router'])
 .config([
@@ -11,25 +10,27 @@ function($stateProvider,$urlRouterProvider){
 		url:'/home',
 		templateUrl:'/home.html',
 		controller:'myCtrl',
-				resolve: {
-  postPromise: ['posts', function(posts){
-    return posts.getAll();
-  }]
-}
+		resolve: {
+		postPromise: ['posts', function(posts){
+    		return posts.getAll();
+					}]
+		}
 		})
 		.state('posts', {
 		url: '/posts/{id}',
 		templateUrl: '/posts.html',
-		controller: 'PostsCtrl'
+		controller: 'PostsCtrl',
+		resolve: {
+			post: ['$stateParams', 'posts', function($stateParams, posts) {
+				return posts.get($stateParams.id);
+			}]
+		}	
 		});
 	$urlRouterProvider.otherwise('home');
 }])
 .factory('posts',['$http',function($http){
 	var p={
 		posts:[]
-		//{title:'Welcome!', author:'System', upvotes:100,comments: [
-		//	{user: 'System', body: 'Welcome to mini-post!', upvotes:100},
-		//]}
 	};
 	p.getAll = function() {
 		return $http.get('/posts').success(function(data){
@@ -39,7 +40,21 @@ function($stateProvider,$urlRouterProvider){
 	p.create = function(post) {
 		return $http.post('/posts', post).success(function(data){
 		p.posts.push(data);
-	});
+		});
+	};
+	p.upvote = function(post) {
+	return $http.put('/posts/' + post._id + '/upvote')
+	  .success(function(data){
+	    post.upvotes += 1;
+	  });
+	};
+	p.get = function(id) {
+		return $http.get('/posts/' + id).then(function(res){
+			return res.data;
+		});
+	};
+	p.addComment = function(id, comment) {
+		return $http.post('/posts/' + id + '/comments', comment);
 	};
 	return p;
 }])
@@ -53,38 +68,30 @@ function($scope,posts){
 			title:$scope.title,
 			author:$scope.author,
 		});
-		//$scope.posts.push({
-		//	title: $scope.title,
-		//	author: $scope.author,
-		//	upvotes: 0,
-		//	comments: [
-		//	{user: 'Joe', body: 'Cool post!', upvotes: 0},
-		//	{user: 'Bob', body: 'Great idea but everything is wrong!', upvotes: 0}
-		//	]
-		//});
 		$scope.title='';
 		$scope.author='';
 	};
-	$scope.title="";
 	$scope.voteUp=function(post){
-		post.upvotes+=1;
-	};
+		posts.upvote(post);
+	}
 	$scope.voteDown=function(post){
 		post.upvotes-=1;
-	};
+	}
 }])
 .controller('PostsCtrl', [
 '$scope',
-'$stateParams',
+'post',
 'posts',
-function($scope, $stateParams, posts){
-	$scope.post = posts.posts[$stateParams.id];
+function($scope, posts,post){
+	$scope.post = post;
 	$scope.addComment = function(){
 		if($scope.body === '' || $scope.user==='') { return; }
-			$scope.post.comments.push({
+			posts.addComments(post._id,{
 				body: $scope.body,
 				user: $scope.user,
-				upvotes: 0
+				upvotes: 0,
+			}).success(function(comment) {
+				$scope.post.comments.push(comment);
 			});
 		scope.body = '';
 	};
