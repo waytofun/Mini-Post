@@ -1,80 +1,103 @@
-<html style="background-color:#563d7c">
-	<head>
-		<title>My App</title>
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
-		<link rel="stylesheet" type="text/css" href="/stylesheets/style.css">
-		<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.19/angular.min.js"></script>
-		<script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.10/angular-ui-router.js"></script>
-		<script src="https://code.jquery.com/jquery.js"></script>
-		<script src="/javascripts/angularApp.js"></script>
-		<style> .glyphicon-thumbs-up{cursor:pointer}</style>
-		<style> .glyphicon-thumbs-down{cursor:pointer}</style>
-	</head>
-	<body ng-app="myApp" class="container" style="background-color:339966">
-		<div class="row">
-			<div class="col-md-6 col-md-offset-3">
-			<ui-view></ui-view>
-			</div>
-		</div>
-		<div class="row">
-			<address class='col-md-6 col-md-offset-3'>
-  				<strong>Some Company, Inc.</strong><br>
-  					001 street<br>
-  					Some City, State XXXXX<br>
-  					<abbr title="Phone">P:</abbr> (123) 456-7890
-			</address>
-		</div>
-	<script type="text/ng-template" id="/home.html">
-		<div class="page-header">
-			<h1>Mini Post</h1>
-		</div>
-		<div ng-repeat="post in posts | orderBy:'-upvotes'">
-			<span class="glyphicon glyphicon-thumbs-up" 
-				ng-click="voteUp(post)">
-			</span>
-			OR
-			<span class="glyphicon glyphicon-thumbs-down"
-			ng-click="voteDown(post)"></span>
-			"{{post.title}}" Started by {{post.author}} - upvotes:{{post.upvotes}}
-			<span><a href="#/posts/{{post._id}}">Comments</a></span>
-		</div>
-		<form ng-submit="addPost()">
-		<table>
-			<tr><td>Author:</td><td><input type="text" ng-model="author"></input></td></tr>
-			<tr><td>Topic:</td><td><input type="text" ng-model="title"></input></td></tr>
-			<tr><td colspan="2"><button type="submit"> New Post</button><td></tr>
-		</table>
-		</form>
-	</script>
-	<script type="text/ng-template" id="/posts.html">
-		<div class="page-header">
-			<h3>
-			<span>
-				"{{post.title}}" Started by {{post.author}}
-			</span>
-			</h3>		
-		</div>
+<html>
+<head>
+  <title>Mini Post</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.19/angular.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.10/angular-ui-router.js"></script>
+  <script src="https://code.jquery.com/jquery.js"></script>
+  <script src="/javascripts/angularApp.js"></script>
+  <script src="/javascripts/animation.js"></script>
+  <style> .glyphicon-thumbs-up { cursor:pointer } </style>
+  <style> .glyphicon-thumbs-down { cursor:pointer } </style>
+</head>
+<body ng-app="MiniPost" style="background-color:339966">
+  <!-- <div id="all-title">
+  <h4 class="title">Test</h4>
+  </div> -->
+  <div class="row">
+    <div class="col-md-6 col-md-offset-3">
+      <ui-view></ui-view>
+    </div>
+  </div>
+  <script type="text/ng-template" id="/home.html">
+    <div class="page-header">
+        <h1><em>Mini-Post</em></h1>
+    </div>
+    <div>
+      <b>Search:</b> <input ng-model="topic">
+    </div>
+      <div ng-repeat="post in posts | orderBy:'-upvotes' | filter:topic">
+        <span class="glyphicon glyphicon-thumbs-up"
+          ng-click="incrementUpvotes(post)">
+        </span>
+        <span class="glyphicon glyphicon-thumbs-down"
+          ng-click="decrementUpvotes(post)">
+        </span>
+        {{post.upvotes}}
+        <span style="font-size:20px; margin-left:10px;">
+            "{{post.title}}" by {{post.author}}
+          </span>
+           <span>
+            <a href="#/posts/{{post._id}}">Comments</a>
+          </span>
+        </span>
+      </div>
+      <form ng-submit="addPost()"
+        style="margin-top:30px;">
+        <h3>Add a new post</h3>
+        <div class="form-group">
+          <input type="text"
+            class="form-control"
+            placeholder="Title"
+            ng-model="title"></input>
+        </div>
+        <div class="form-group">
+          <input type="text"
+          class="form-control"
+          placeholder="Author"
+          ng-model="author"></input>
+        </div>
+        <button type="submit" class="btn btn-primary">Post</button>
+      </form>
+  </script>
+  <script type="text/ng-template" id="/posts.html">
+    <div class="page-header">
+      <h3>
+        <span>
+          "{{post.title}}" by {{post.author}}
+        </span>
+      </h3>
+    </div>
+    <div ng-repeat="comment in post.comments | orderBy:'-upvotes'">
+      <span class="glyphicon glyphicon-thumbs-up"
+        ng-click="incrementUpvotes(comment)"></span>
+        <span class="glyphicon glyphicon-thumbs-down"
+          ng-click="decrementUpvotes(comment)">
+        </span>
+      {{comment.upvotes}} - by {{comment.user}}
+      <span style="font-size:20px; margin-left:10px;">
+        {{comment.body}}
+      </span>
+    </div>
+    <form ng-submit="addComment()"
+      style="margin-top:30px;">
+      <h3>Add a new comment</h3>
 
-		<div ng-repeat="comment in post.comments | orderBy:'-upvotes'">
-			<span class="glyphicon glyphicon-thumbs-up"
-			ng-click="upVoteComment(comment)"></span>
-			OR
-			<span class="glyphicon glyphicon-thumbs-down"
-			ng-click="downVoteComment(comment)"></span>
-			{{comment.upvotes}} - by {{comment.user}}
-			<span style="font-size:20px; margin-left:10px;">
-			{{comment.body}}
-			</span>
-		</div>
-		<form ng-submit="addComment()"style="margin-top:30px;">
-			<h3>Add a new comment</h3>
-			<div class="form-group">
-				<input type="text" class="form-control" placeholder="user" ng-model="user"></input>
-				<textarea rows="4" cols="50" placeholder="comment"ng-model="body"></textarea>
-			</div>
-			<button type="submit" class="btn btn-primary">Post</button>
-		</form>
-	</script>
-	</body>
+      <div class="form-group">
+        <input type="text"
+        class="form-control"
+        placeholder="Comment"
+        ng-model="body"></input>
+      </div>
+      <div class="form-group">
+          <input type="text"
+          class="form-control"
+          placeholder="User"
+          ng-model="user"></input>
+        </div>
+      <button type="submit" class="btn btn-primary">Post</button>
+    </form>
+  </script>
+</body>
 </html>
