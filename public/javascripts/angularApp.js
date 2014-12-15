@@ -85,14 +85,18 @@ function($stateProvider, $urlRouterProvider) {
 	$scope.posts = posts.posts;
 
 	$scope.addPost = function(){
-	  if($scope.title === '' || $scope.author ==='') { return; }
+	  if(!$scope.title || $scope.title === '' || !$scope.author || $scope.author ==='') { return; }
 	  posts.create({
 	    title: $scope.title,
 	    author: $scope.author,
 	  });
 	  $scope.title = '';
+	  $scope.author='';
 	};
-
+	$scope.reset = function(){
+		$scope.title='';
+		$scope.author='';
+	}
 	$scope.incrementUpvotes = function(post) {
 	  posts.upvote(post);
 	}
@@ -107,7 +111,7 @@ function($stateProvider, $urlRouterProvider) {
 function($scope, posts, post){
   $scope.post = post;
 	$scope.addComment = function(){
-	  if($scope.body === '' || $scope.user === '') { return; }
+	  if(!$scope.body || $scope.body === '' || !$scope.user || $scope.user === '') { return; }
 	  posts.addComment(post._id, {
 	    body: $scope.body,
 	    user: $scope.user,
@@ -115,7 +119,12 @@ function($scope, posts, post){
 	    $scope.post.comments.push(comment);
 	  });
 	  $scope.body = '';
+	  $scope.user='';
 	};
+	$scope.reset= function(){
+		$scope.body = '';
+	  	$scope.user='';
+	}
 	$scope.incrementUpvotes = function(comment){
 	  posts.upvoteComment(post, comment);
 	};
