@@ -3,29 +3,44 @@
     bottom: 0;
     right: 'center';
 }*/
+.post-form input {
+	-webkit-transition:all linear 1s;
+	transition: all linear 1s;
+	background: white;;
+}
 .post-form input.ng-invalid.ng-touched {
     background: #FA787E;
-  }
+}
 
 .post-form input.ng-valid.ng-touched {
     background-color: #78FA89;
- }
+}
 
- .comment-form input.ng-invalid.ng-touched{
+.comment-form input {
+	-webkit-transition:all linear 1s;
+	transition: all linear 1s;
+	background: white;;
+}
+.comment-form textarea {
+	-webkit-transition:all linear 1s;
+	transition: all linear 1s;
+	background: white;;
+}
+.comment-form input.ng-invalid.ng-touched{
 	background-color: #FA787E;
-  }
+}
 
 .comment-form input.ng-valid.ng-touched {
     background-color: #78FA89;
- }
+}
 
- .comment-form textarea.ng-invalid.ng-touched{
+.comment-form textarea.ng-invalid.ng-touched{
 	background-color: #FA787E;
-  }
+ }
 
 .comment-form textarea.ng-valid.ng-touched {
     background-color: #78FA89;
- }
+}
 
 
 
